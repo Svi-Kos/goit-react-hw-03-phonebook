@@ -4,11 +4,11 @@ import './App.css';
 import ContactList from './components/ContactList';
 import ContactForm from 'components/ContactForm/ContactForm';
 import Filter from 'components/Filter/Filter';
-import contacts from 'contacts.json';
+// import contacts from 'contacts.json';
 
 class App extends Component {
   state = {
-    contacts,
+    contacts: [],
     filter: '',
   };
 
@@ -39,6 +39,21 @@ class App extends Component {
   changeFilter = event => {
     this.setState({ filter: event.currentTarget.value });
   };
+
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
   render() {
     const normalizedFilter = this.state.filter.toLowerCase();
